@@ -1,33 +1,34 @@
 <?php
 
-namespace App\Http\Controllers;
-use App\Models\Mahasiswa;
+namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Dosen;
 
-class MahasiswaController extends Controller
+class DosenController extends Controller
 {
     public function index()
     {
-        return response()->json(Mahasiswa::all(), 200);
+        return response()->json(Dosen::all(), 200);
     }
 
     public function store(Request $request)
     {
-        $data = Mahasiswa::create($request->all());
+        $data = Dosen::create($request->all());
         return response()->json($data, 201);
     }
 
     public function show($id)
     {
-        $data = Mahasiswa::find($id);
+        $data = Dosen::find($id);
         if (!$data) return response()->json(['message' => 'Not Found'], 404);
         return response()->json($data, 200);
     }
 
     public function update(Request $request, $id)
     {
-        $data = Mahasiswa::find($id);
+        $data = Dosen::find($id);
         if (!$data) return response()->json(['message' => 'Not Found'], 404);
 
         $data->update($request->all());
@@ -36,7 +37,7 @@ class MahasiswaController extends Controller
 
     public function destroy($id)
     {
-        $data = Mahasiswa::find($id);
+        $data = Dosen::find($id);
         if (!$data) return response()->json(['message' => 'Not Found'], 404);
 
         $data->delete();
