@@ -36,4 +36,35 @@ class DatamahasiswaController extends Controller
             'data' => $data
         ], 200);
     }
+
+    public function show(Request $request, $id)
+    {
+        $data = Mahasiswa::find($id);
+
+        // ❌ Handle kalau data tidak ditemukan
+        if (!$data) {
+            return response()->json(['message' => 'Not Found'], 404);
+        }
+
+        // ✅ Jika client minta XML
+        if (str_contains($request->header('Accept'), 'application/xml')) {
+
+            $xml = new \SimpleXMLElement('<mahasiswa/>');
+
+            $xml->addChild('id', $data->id);
+            $xml->addChild('nim', $data->nim);
+            $xml->addChild('nama', $data->nama);
+            $xml->addChild('email', $data->email);
+            $xml->addChild('prodi', $data->prodi);
+            $xml->addChild('created_at', $data->created_at);
+
+            return response($xml->asXML(), 200)
+                ->header('Content-Type', 'application/xml');
+        }
+
+        // ✅ Default JSON
+        return response()->json([
+            'data' => $data
+        ], 200);
+    }
 }

@@ -12,4 +12,9 @@ class Mahasiswa extends Model
         'email',
         'prodi'
     ];
+
+    public function jadwals()
+    {
+        return $this->belongsToMany(Jadwal::class, 'peserta_jadwal');
+    }
 }

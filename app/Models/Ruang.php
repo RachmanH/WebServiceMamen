@@ -4,13 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Dosen extends Model
+class Ruang extends Model
 {
     protected $fillable = [
-        'nama',
-        'nidn',
-        'email',
-        'prodi'
+        'nama_ruang',
+        'gedung'
     ];
 
     public function jadwals()
