@@ -21,6 +21,6 @@ Route::get('datamahasiswa', [DatamahasiswaController::class, 'index']);
 // Endpoint POST
 Route::post('datamahasiswa', [DatamahasiswaController::class, 'store']);
 
-Route::get('/datamahasiswa/{nim}', [DatamahasiswaController::class, 'show']);
+Route::get('datamahasiswa/{nim}', [DatamahasiswaController::class, 'show']);
 
 Route::post('hitung-luas', [HitungController::class, 'hitungLuas']);

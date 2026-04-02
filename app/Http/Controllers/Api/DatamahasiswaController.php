@@ -3,62 +3,37 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Mahasiswa;
 use Illuminate\Http\Request;
 
 class DatamahasiswaController extends Controller
 {
-    // Endpoint GET: Mengambil Data
-    public function index()
+    public function index(Request $request)
     {
-        $data = [
-            ['nim' => '2401001', 'nama' => 'Budi Utomo', 'prodi' =>
-            'Informatika'],
-            ['nim' => '2401002', 'nama' => 'Siti Aminah', 'prodi' =>
-            'Sistem Informasi']
-        ];
-        return response()->json([
-            'success' => true,
-            'message' => 'Daftar Mahasiswa Berhasil Diambil',
-            'data' => $data
-        ], 200);
-    }
-    // Endpoint POST: Menerima Data Baru
-    public function store(Request $request)
-    {
-        // Validasi Request
-        $request->validate([
-            'nim' => 'required',
-            'nama' => 'required'
-        ]);
-        // Simulasi menyimpan data
-        return response()->json([
-            'success' => true,
-            'message' => 'Data Mahasiswa Berhasil Disimpan!',
-            'data' => $request->all() // Mengembalikan apa yang dikirim client
-        ], 201); // Status 201: Created
-    }
+        $data = Mahasiswa::paginate(10);
 
-    public function show($nim)
-    {
-        $data = [
-            ['nim' => '2401001', 'nama' => 'Budi Utomo', 'prodi' => 'Informatika'],
-            ['nim' => '2401002', 'nama' => 'Siti Aminah', 'prodi' => 'Sistem Informasi']
-        ];
+        // Cek apakah client minta XML
+        if (str_contains($request->header('Accept'), 'application/xml')) {
 
-        // Cari mahasiswa berdasarkan NIM
-        $datamahasiswa = collect($data)->firstWhere('nim', $nim);
+            $xml = new \SimpleXMLElement('<mahasiswa_list/>');
 
-        if (!$datamahasiswa) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Mahasiswa tidak ditemukan'
-            ], 404);
+            foreach ($data as $mhs) {
+                $node = $xml->addChild('mahasiswa');
+                $node->addChild('id', $mhs->id);
+                $node->addChild('nim', $mhs->nim);
+                $node->addChild('nama', $mhs->nama);
+                $node->addChild('email', $mhs->email); // ✅ sesuai model
+                $node->addChild('prodi', $mhs->prodi); // ✅ ganti dari jurusan
+                $node->addChild('created_at', $mhs->created_at);
+            }
+
+            return response($xml->asXML(), 200)
+                ->header('Content-Type', 'application/xml');
         }
 
+        // Default JSON
         return response()->json([
-            'success' => true,
-            'message' => 'Detail Mahasiswa',
-            'data' => $datamahasiswa
+            'data' => $data
         ], 200);
     }
 }

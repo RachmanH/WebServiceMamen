@@ -9,25 +9,15 @@ class MahasiswaSeeder extends Seeder
 {
     public function run(): void
     {
-        Mahasiswa::create([
-            'nama' => 'Ahmad Fauzi',
-            'nim' => '220001',
-            'email' => 'ahmad@mail.com',
-            'prodi' => 'Informatika',
-        ]);
+        $prodiList = ['Informatika', 'Sistem Informasi', 'Teknik Komputer'];
 
-        Mahasiswa::create([
-            'nama' => 'Dewi Lestari',
-            'nim' => '220002',
-            'email' => 'dewi@mail.com',
-            'prodi' => 'Sistem Informasi',
-        ]);
-
-        Mahasiswa::create([
-            'nama' => 'Rizky Pratama',
-            'nim' => '220003',
-            'email' => 'rizky@mail.com',
-            'prodi' => 'Teknik Komputer',
-        ]);
+        for ($i = 1; $i <= 10000; $i++) {
+            Mahasiswa::create([
+                'nama' => 'Mahasiswa ' . $i,
+                'nim' => '22' . str_pad($i, 4, '0', STR_PAD_LEFT),
+                'email' => 'mahasiswa' . $i . '@mail.com',
+                'prodi' => $prodiList[array_rand($prodiList)],
+            ]);
+        }
     }
 }

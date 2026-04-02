@@ -9,25 +9,16 @@ class DosenSeeder extends Seeder
 {
     public function run(): void
     {
-        Dosen::create([
-            'nama' => 'Dr. Budi Santoso',
-            'nidn' => '01010101',
-            'email' => 'budi@kampus.ac.id',
-            'prodi' => 'Informatika',
-        ]);
+        $prodiList = ['Informatika', 'Sistem Informasi', 'Teknik Komputer'];
+        $gelarDepan = ['Dr.', 'Prof.', 'Ir.'];
 
-        Dosen::create([
-            'nama' => 'Dr. Siti Aminah',
-            'nidn' => '02020202',
-            'email' => 'siti@kampus.ac.id',
-            'prodi' => 'Sistem Informasi',
-        ]);
-
-        Dosen::create([
-            'nama' => 'Dr. Andi Wijaya',
-            'nidn' => '03030303',
-            'email' => 'andi@kampus.ac.id',
-            'prodi' => 'Teknik Komputer',
-        ]);
+        for ($i = 1; $i <= 10000; $i++) {
+            Dosen::create([
+                'nama' => $gelarDepan[array_rand($gelarDepan)] . ' Dosen ' . $i,
+                'nidn' => str_pad($i, 8, '0', STR_PAD_LEFT),
+                'email' => 'dosen' . $i . '@kampus.ac.id',
+                'prodi' => $prodiList[array_rand($prodiList)],
+            ]);
+        }
     }
 }
