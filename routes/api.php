@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\DosenController;
 use App\Http\Controllers\Api\MahasiswaController;
 use App\Http\Controllers\Api\DatamahasiswaController;
+use App\Http\Controllers\Api\HitungController;
 
 
 // Route::get('/user', function (Request $request) {
@@ -19,3 +20,7 @@ Route::apiResource('mahasiswa', MahasiswaController::class);
 Route::get('datamahasiswa', [DatamahasiswaController::class, 'index']);
 // Endpoint POST
 Route::post('datamahasiswa', [DatamahasiswaController::class, 'store']);
+
+Route::get('/datamahasiswa/{nim}', [DatamahasiswaController::class, 'show']);
+
+Route::post('hitung-luas', [HitungController::class, 'hitungLuas']);
