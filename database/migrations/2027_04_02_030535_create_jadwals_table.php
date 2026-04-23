@@ -13,9 +13,15 @@ return new class extends Migration
     {
         Schema::create('jadwals', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('dosen_id')->constrained();
-            $table->foreignId('matakuliah_id')->constrained();
-            $table->foreignId('ruang_id')->constrained();
+            $table->foreignId('dosen_id')
+                ->constrained()
+                ->cascadeOnDelete();
+            $table->foreignId('matakuliah_id')
+                ->constrained()
+                ->cascadeOnDelete();
+            $table->foreignId('ruang_id')
+                ->constrained()
+                ->cascadeOnDelete();
             $table->string('hari');
             $table->time('jam_mulai');
             $table->timestamps();

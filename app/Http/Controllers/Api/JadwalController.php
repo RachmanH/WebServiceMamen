@@ -87,4 +87,92 @@ class JadwalController extends Controller
             'data' => $jadwal
         ]);
     }
+
+    public function show($id)
+    {
+        $jadwal = Jadwal::with(['dosen', 'matakuliah', 'ruang', 'mahasiswas'])->find($id);
+        if (!$jadwal) return response()->json(['message' => 'Not Found'], 404);
+        return response()->json($jadwal, 200);
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'dosen_id' => 'required|exists:dosens,id',
+            'matakuliah_id' => 'required|exists:matakuliahs,id',
+            'ruang_id' => 'required|exists:ruangs,id',
+            'hari' => 'required|string',
+            'jam_mulai' => 'required|date_format:H:i',
+        ]);
+
+        // Cek bentrok: dosen mengajar di jam yang sama
+        $bentrokDosen = Jadwal::where('dosen_id', $request->dosen_id)
+            ->where('hari', $request->hari)
+            ->where('jam_mulai', $request->jam_mulai)
+            ->exists();
+
+        if ($bentrokDosen) {
+            return response()->json(['message' => 'Jadwal bentrok - Dosen sudah mengajar di waktu yang sama'], 409);
+        }
+
+        // Cek bentrok: ruangan digunakan di jam yang sama
+        $bentrokRuang = Jadwal::where('ruang_id', $request->ruang_id)
+            ->where('hari', $request->hari)
+            ->where('jam_mulai', $request->jam_mulai)
+            ->exists();
+
+        if ($bentrokRuang) {
+            return response()->json(['message' => 'Jadwal bentrok - Ruangan sudah digunakan di waktu yang sama'], 409);
+        }
+
+        $jadwal = Jadwal::create($request->all());
+        return response()->json($jadwal, 201);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $jadwal = Jadwal::find($id);
+        if (!$jadwal) return response()->json(['message' => 'Not Found'], 404);
+
+        $request->validate([
+            'dosen_id' => 'required|exists:dosens,id',
+            'matakuliah_id' => 'required|exists:matakuliahs,id',
+            'ruang_id' => 'required|exists:ruangs,id',
+            'hari' => 'required|string',
+            'jam_mulai' => 'required|date_format:H:i',
+        ]);
+
+        // Cek bentrok (exclude current jadwal)
+        $bentrokDosen = Jadwal::where('dosen_id', $request->dosen_id)
+            ->where('hari', $request->hari)
+            ->where('jam_mulai', $request->jam_mulai)
+            ->where('id', '!=', $id)
+            ->exists();
+
+        if ($bentrokDosen) {
+            return response()->json(['message' => 'Jadwal bentrok - Dosen sudah mengajar di waktu yang sama'], 409);
+        }
+
+        $bentrokRuang = Jadwal::where('ruang_id', $request->ruang_id)
+            ->where('hari', $request->hari)
+            ->where('jam_mulai', $request->jam_mulai)
+            ->where('id', '!=', $id)
+            ->exists();
+
+        if ($bentrokRuang) {
+            return response()->json(['message' => 'Jadwal bentrok - Ruangan sudah digunakan di waktu yang sama'], 409);
+        }
+
+        $jadwal->update($request->all());
+        return response()->json($jadwal, 200);
+    }
+
+    public function destroy($id)
+    {
+        $jadwal = Jadwal::find($id);
+        if (!$jadwal) return response()->json(['message' => 'Not Found'], 404);
+
+        $jadwal->delete();
+        return response()->json(['message' => 'Deleted'], 200);
+    }
 }

@@ -1,0 +1,1048 @@
+{
+	"info": {
+		"_postman_id": "siakad-api-v1-0-0",
+		"name": "SIAKAD API v1.0",
+		"description": "# Dokumentasi API SIAKAD\n\n> **Status:** [PRODUCTION]  \n> **Version:** 1.0.0  \n> **Base URL:** `{{base_url}}`\n\n## ⚠️ PENTING - Cara Setup & Troubleshooting\n\n### 1️⃣ Setup Awal\n- Buka **Collection Variables** di tab kanan\n- Pastikan `base_url` = `http://localhost:8000/api` (dengan `/api`)\n- Jangan gunakan `http://localhost:8000` tanpa `/api`\n\n### 2️⃣ Headers Required\nSetiap request wajib punya headers:\n```\nContent-Type: application/json\nAccept: application/json\n```\n\n### 3️⃣ Troubleshooting: Jika Response HTML (Welcome Page)\n**MASALAH:** URL tidak punya `/api` prefix\n- ❌ Salah: `{{base_url}}/matakuliah/1` (jika base_url=localhost)\n- ✅ Benar: `http://localhost:8000/api/matakuliah/1`\n- ✅ Benar: `{{base_url}}/matakuliah/1` (jika base_url sudah include /api)\n\n**SOLUSI:** Cek dan update variable `base_url` ke: `http://localhost:8000/api`\n\n## Daftar Endpoint\nSetiap endpoint sudah siap digunakan.\nResponse mendukung JSON dan XML.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8000/api",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "01 Authentication",
+			"description": {
+				"type": "text/markdown",
+				"content": "## 01 Authentication\n\nFolder ini mengelola autentikasi pengguna sistem SIAKAD.\n\n> **Catatan:** Saat ini endpoint authentication menggunakan default Laravel. Untuk implementasi JWT, tambahkan package `tymon/jwt-auth`."
+			},
+			"item": [
+				{
+					"name": "Get Users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/users",
+							"host": ["{{base_url}}"],
+							"path": ["users"]
+						},
+						"description": "### Get Users\n\n`STATUS: PRODUCTION`\n\nEndpoint untuk mengambil daftar pengguna terdaftar."
+					},
+					"response": [
+						{
+							"name": "200 OK - Success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": "{{base_url}}/users"
+							},
+							"status": "OK",
+							"code": 200,
+							"body": "{\n  \"success\": true,\n  \"message\": \"Data User Berhasil Diambil\",\n  \"data\": [\n    {\n      \"id\": 1,\n      \"name\": \"Admin\",\n      \"email\": \"admin@uhb.ac.id\",\n      \"created_at\": \"2026-01-15T08:00:00.000000Z\"\n    }\n  ]\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "02 Master Data Mahasiswa",
+			"description": {
+				"type": "text/markdown",
+				"content": "## 02 Master Data Mahasiswa\n\n`STATUS: PRODUCTION`\n\nFolder ini mengelola seluruh informasi biodata mahasiswa.\n\n#### Aturan Penggunaan\n- NIM bersifat **unik** dan **immutable** (tidak dapat diubah)\n- Format data wajib JSON dengan Content-Type: `application/json`\n- Mendukung response format XML dengan header `Accept: application/xml`\n\n> ### PENTING\n> Field **NIM** bersifat **Unik** dan **Immutable**.\n> NIM tidak dapat diubah setelah data dibuat."
+			},
+			"item": [
+				{
+					"name": "Get All Students (Paginated)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/datamahasiswa?page=1",
+							"host": ["{{base_url}}"],
+							"path": ["datamahasiswa"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								}
+							]
+						},
+						"description": "### GET /datamahasiswa - List All Students\n\n`STATUS: PRODUCTION`\n\nEndpoint untuk mengambil daftar mahasiswa dengan pagination.\n\n#### Parameters\n| Parameter | Tipe | Wajib | Deskripsi |\n| :--- | :--- | :--- | :--- |\n| `page` | Integer | Tidak | Nomor halaman (default: 1) |"
+					},
+					"response": [
+						{
+							"name": "200 OK - Success (JSON)",
+							"originalRequest": {
+								"method": "GET",
+								"header": [{"key": "Accept", "value": "application/json"}],
+								"url": "{{base_url}}/datamahasiswa"
+							},
+							"status": "OK",
+							"code": 200,
+							"body": "{\n  \"data\": [\n    {\n      \"id\": 1,\n      \"nim\": \"2024001\",\n      \"nama\": \"Ahmad Rizky\",\n      \"email\": \"ahmad.rizky@student.uhb.ac.id\",\n      \"prodi\": \"Informatika\",\n      \"created_at\": \"2026-01-15T08:00:00.000000Z\"\n    }\n  ]\n}"
+						},
+						{
+							"name": "200 OK - Success (XML)",
+							"originalRequest": {
+								"method": "GET",
+								"header": [{"key": "Accept", "value": "application/xml"}],
+								"url": "{{base_url}}/datamahasiswa"
+							},
+							"status": "OK",
+							"code": 200,
+							"body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<mahasiswa_list>\n  <mahasiswa>\n    <id>1</id>\n    <nim>2024001</nim>\n    <nama>Ahmad Rizky</nama>\n    <email>ahmad.rizky@student.uhb.ac.id</email>\n    <prodi>Informatika</prodi>\n    <created_at>2026-01-15T08:00:00.000000Z</created_at>\n  </mahasiswa>\n</mahasiswa_list>"
+						},
+						{
+							"name": "404 Not Found - Data Empty",
+							"status": "Not Found",
+							"code": 404,
+							"body": "{\n  \"data\": []\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Student by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/datamahasiswa/:id",
+							"host": ["{{base_url}}"],
+							"path": ["datamahasiswa", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1",
+									"description": "ID mahasiswa di database"
+								}
+							]
+						},
+						"description": "### GET /datamahasiswa/:id - Get Student by ID\n\n`STATUS: PRODUCTION`\n\n#### Path Variables\n| Parameter | Tipe | Wajib | Deskripsi |\n| :--- | :--- | :--- | :--- |\n| `id` | Integer | Ya | ID mahasiswa |"
+					},
+					"response": [
+						{
+							"name": "200 OK - Data Found",
+							"status": "OK",
+							"code": 200,
+							"body": "{\n  \"data\": {\n    \"id\": 1,\n    \"nim\": \"2024001\",\n    \"nama\": \"Ahmad Rizky\",\n    \"email\": \"ahmad.rizky@student.uhb.ac.id\",\n    \"prodi\": \"Informatika\",\n    \"created_at\": \"2026-01-15T08:00:00.000000Z\"\n  }\n}"
+						},
+						{
+							"name": "404 Not Found - Student Not Found",
+							"status": "Not Found",
+							"code": 404,
+							"body": "{\n  \"message\": \"Not Found\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Create Student",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nim\": \"2024001\",\n  \"nama\": \"Ahmad Rizky\",\n  \"email\": \"ahmad.rizky@student.uhb.ac.id\",\n  \"prodi\": \"Informatika\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/datamahasiswa",
+							"host": ["{{base_url}}"],
+							"path": ["datamahasiswa"]
+						},
+						"description": "### POST /datamahasiswa - Create Student\n\n`STATUS: PRODUCTION`\n\n#### Request Body\n| Field | Tipe | Wajib | Deskripsi |\n| :--- | :--- | :--- | :--- |\n| `nim` | String | Ya | NIM (unik) |\n| `nama` | String | Ya | Nama lengkap |\n| `email` | String | Ya | Email aktif |\n| `prodi` | String | Ya | Program studi |"
+					},
+					"response": [
+						{
+							"name": "201 Created - Success",
+							"status": "Created",
+							"code": 201,
+							"body": "{\n  \"id\": 1,\n  \"nim\": \"2024001\",\n  \"nama\": \"Ahmad Rizky\",\n  \"email\": \"ahmad.rizky@student.uhb.ac.id\",\n  \"prodi\": \"Informatika\",\n  \"created_at\": \"2026-01-15T08:00:00.000000Z\",\n  \"updated_at\": \"2026-01-15T08:00:00.000000Z\"\n}"
+						},
+						{
+							"name": "400 Bad Request - Validation Error",
+							"status": "Bad Request",
+							"code": 400,
+							"body": "{\n  \"message\": \"The given data was invalid.\",\n  \"errors\": {\n    \"nim\": [\"The nim field is required.\"]\n  }\n}"
+						}
+					]
+				},
+				{
+					"name": "Get All Mahasiswa (Alternative)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/mahasiswa",
+							"host": ["{{base_url}}"],
+							"path": ["mahasiswa"]
+						},
+						"description": "### GET /mahasiswa - List All (Alternative)\n\n`STATUS: PRODUCTION`\n\nEndpoint alternatif tanpa pagination."
+					},
+					"response": [
+						{
+							"name": "200 OK - Success",
+							"status": "OK",
+							"code": 200,
+							"body": "[\n  {\n    \"id\": 1,\n    \"nim\": \"2024001\",\n    \"nama\": \"Ahmad Rizky\",\n    \"email\": \"ahmad.rizky@student.uhb.ac.id\",\n    \"prodi\": \"Informatika\"\n  }\n]"
+						}
+					]
+				},
+				{
+					"name": "Create Mahasiswa (Alternative)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nim\": \"2024002\",\n  \"nama\": \"Siti Aminah\",\n  \"email\": \"siti.aminah@student.uhb.ac.id\",\n  \"prodi\": \"Sistem Informasi\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/mahasiswa",
+							"host": ["{{base_url}}"],
+							"path": ["mahasiswa"]
+						}
+					},
+					"response": [
+						{
+							"name": "201 Created",
+							"status": "Created",
+							"code": 201,
+							"body": "{\n  \"id\": 2,\n  \"nim\": \"2024002\",\n  \"nama\": \"Siti Aminah\",\n  \"email\": \"siti.aminah@student.uhb.ac.id\",\n  \"prodi\": \"Sistem Informasi\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Mahasiswa by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/mahasiswa/:id",
+							"host": ["{{base_url}}"],
+							"path": ["mahasiswa", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "200 OK",
+							"status": "OK",
+							"code": 200,
+							"body": "{\n  \"id\": 1,\n  \"nim\": \"2024001\",\n  \"nama\": \"Ahmad Rizky\",\n  \"email\": \"ahmad.rizky@student.uhb.ac.id\",\n  \"prodi\": \"Informatika\"\n}"
+						},
+						{
+							"name": "404 Not Found",
+							"status": "Not Found",
+							"code": 404,
+							"body": "{\n  \"message\": \"Not Found\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Update Mahasiswa",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nama\": \"Ahmad Rizky Pratama\",\n  \"email\": \"ahmad.pratama@student.uhb.ac.id\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/mahasiswa/:id",
+							"host": ["{{base_url}}"],
+							"path": ["mahasiswa", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						},
+						"description": "### PUT /mahasiswa/:id - Update Student\n\n`STATUS: PRODUCTION`\n\n> **PENTING:** NIM tidak dapat diubah!"
+					},
+					"response": [
+						{
+							"name": "200 OK - Updated",
+							"status": "OK",
+							"code": 200,
+							"body": "{\n  \"id\": 1,\n  \"nim\": \"2024001\",\n  \"nama\": \"Ahmad Rizky Pratama\",\n  \"email\": \"ahmad.pratama@student.uhb.ac.id\",\n  \"prodi\": \"Informatika\"\n}"
+						},
+						{
+							"name": "404 Not Found",
+							"status": "Not Found",
+							"code": 404,
+							"body": "{\n  \"message\": \"Not Found\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Delete Mahasiswa",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/mahasiswa/:id",
+							"host": ["{{base_url}}"],
+							"path": ["mahasiswa", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						},
+						"description": "### DELETE /mahasiswa/:id - Delete Student\n\n`STATUS: PRODUCTION`"
+					},
+					"response": [
+						{
+							"name": "200 OK - Deleted",
+							"status": "OK",
+							"code": 200,
+							"body": "{\n  \"message\": \"Deleted\"\n}"
+						},
+						{
+							"name": "404 Not Found",
+							"status": "Not Found",
+							"code": 404,
+							"body": "{\n  \"message\": \"Not Found\"\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "03 Master Data Dosen",
+			"description": {
+				"type": "text/markdown",
+				"content": "## 03 Master Data Dosen\n\n`STATUS: PRODUCTION`\n\nFolder ini mengelola data dosen pengajar di sistem SIAKAD.\n\n#### Aturan Penggunaan\n- NIDN bersifat **unik** untuk setiap dosen\n- Format response mendukung JSON dan XML"
+			},
+			"item": [
+				{
+					"name": "Get All Dosen",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/dosen",
+							"host": ["{{base_url}}"],
+							"path": ["dosen"]
+						},
+						"description": "### GET /dosen - List All Lecturers\n\n`STATUS: PRODUCTION`"
+					},
+					"response": [
+						{
+							"name": "200 OK - Success",
+							"status": "OK",
+							"code": 200,
+							"body": "[\n  {\n    \"id\": 1,\n    \"nama\": \"Dr. Ahmad Fauzi, M.Kom\",\n    \"nidn\": \"0123456789\",\n    \"email\": \"ahmad.fauzi@uhb.ac.id\",\n    \"prodi\": \"Informatika\"\n  }\n]"
+						}
+					]
+				},
+				{
+					"name": "Create Dosen",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nama\": \"Dr. Ahmad Fauzi, M.Kom\",\n  \"nidn\": \"0123456789\",\n  \"email\": \"ahmad.fauzi@uhb.ac.id\",\n  \"prodi\": \"Informatika\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/dosen",
+							"host": ["{{base_url}}"],
+							"path": ["dosen"]
+						},
+						"description": "### POST /dosen - Create Lecturer\n\n#### Request Body\n| Field | Tipe | Wajib | Deskripsi |\n| :--- | :--- | :--- | :--- |\n| `nama` | String | Ya | Nama lengkap |\n| `nidn` | String | Ya | NIDN (10 digit) |\n| `email` | String | Ya | Email institusi |\n| `prodi` | String | Ya | Program studi |"
+					},
+					"response": [
+						{
+							"name": "201 Created",
+							"status": "Created",
+							"code": 201,
+							"body": "{\n  \"id\": 1,\n  \"nama\": \"Dr. Ahmad Fauzi, M.Kom\",\n  \"nidn\": \"0123456789\",\n  \"email\": \"ahmad.fauzi@uhb.ac.id\",\n  \"prodi\": \"Informatika\"\n}"
+						},
+						{
+							"name": "400 Bad Request",
+							"status": "Bad Request",
+							"code": 400,
+							"body": "{\n  \"message\": \"The given data was invalid.\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Dosen by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/dosen/:id",
+							"host": ["{{base_url}}"],
+							"path": ["dosen", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "200 OK",
+							"status": "OK",
+							"code": 200,
+							"body": "{\n  \"id\": 1,\n  \"nama\": \"Dr. Ahmad Fauzi, M.Kom\",\n  \"nidn\": \"0123456789\",\n  \"email\": \"ahmad.fauzi@uhb.ac.id\",\n  \"prodi\": \"Informatika\"\n}"
+						},
+						{
+							"name": "404 Not Found",
+							"status": "Not Found",
+							"code": 404,
+							"body": "{\n  \"message\": \"Not Found\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Update Dosen",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nama\": \"Dr. Ahmad Fauzi, M.Kom., Ak.\",\n  \"email\": \"ahmad.fauzi.baru@uhb.ac.id\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/dosen/:id",
+							"host": ["{{base_url}}"],
+							"path": ["dosen", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "200 OK - Updated",
+							"status": "OK",
+							"code": 200,
+							"body": "{\n  \"id\": 1,\n  \"nama\": \"Dr. Ahmad Fauzi, M.Kom., Ak.\",\n  \"nidn\": \"0123456789\",\n  \"email\": \"ahmad.fauzi.baru@uhb.ac.id\",\n  \"prodi\": \"Informatika\"\n}"
+						},
+						{
+							"name": "404 Not Found",
+							"status": "Not Found",
+							"code": 404,
+							"body": "{\n  \"message\": \"Not Found\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Delete Dosen",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/dosen/:id",
+							"host": ["{{base_url}}"],
+							"path": ["dosen", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "200 OK - Deleted",
+							"status": "OK",
+							"code": 200,
+							"body": "{\n  \"message\": \"Deleted\"\n}"
+						},
+						{
+							"name": "404 Not Found",
+							"status": "Not Found",
+							"code": 404,
+							"body": "{\n  \"message\": \"Not Found\"\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "04 Akademik - Mata Kuliah",
+			"description": {
+				"type": "text/markdown",
+				"content": "## 04 Akademik - Mata Kuliah\n\n`STATUS: PRODUCTION`\n\nFolder ini mengelola data mata kuliah yang tersedia di sistem."
+			},
+			"item": [
+				{
+					"name": "Get All Matakuliah",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/matakuliah",
+							"host": ["{{base_url}}"],
+							"path": ["matakuliah"]
+						}
+					},
+					"response": [
+						{
+							"name": "200 OK - Success",
+							"status": "OK",
+							"code": 200,
+							"body": "[\n  {\n    \"id\": 1,\n    \"kode_mk\": \"IF101\",\n    \"nama_mk\": \"Pemrograman Web\"\n  },\n  {\n    \"id\": 2,\n    \"kode_mk\": \"IF102\",\n    \"nama_mk\": \"Basis Data\"\n  }\n]"
+						}
+					]
+				},
+				{
+					"name": "Create Matakuliah",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"kode_mk\": \"IF101\",\n  \"nama_mk\": \"Pemrograman Web\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/matakuliah",
+							"host": ["{{base_url}}"],
+							"path": ["matakuliah"]
+						},
+						"description": "#### Request Body\n| Field | Tipe | Wajib | Deskripsi |\n| :--- | :--- | :--- | :--- |\n| `kode_mk` | String | Ya | Kode mata kuliah (unik) |\n| `nama_mk` | String | Ya | Nama mata kuliah |"
+					},
+					"response": [
+						{
+							"name": "201 Created",
+							"status": "Created",
+							"code": 201,
+							"body": "{\n  \"id\": 1,\n  \"kode_mk\": \"IF101\",\n  \"nama_mk\": \"Pemrograman Web\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Matakuliah by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/matakuliah/:id",
+							"host": ["{{base_url}}"],
+							"path": ["matakuliah", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "200 OK",
+							"status": "OK",
+							"code": 200,
+							"body": "{\n  \"id\": 1,\n  \"kode_mk\": \"IF101\",\n  \"nama_mk\": \"Pemrograman Web\"\n}"
+						},
+						{
+							"name": "404 Not Found",
+							"status": "Not Found",
+							"code": 404,
+							"body": "{\n  \"message\": \"Not Found\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Update Matakuliah",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nama_mk\": \"Pemrograman Web Lanjut\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/matakuliah/:id",
+							"host": ["{{base_url}}"],
+							"path": ["matakuliah", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "200 OK - Updated",
+							"status": "OK",
+							"code": 200,
+							"body": "{\n  \"id\": 1,\n  \"kode_mk\": \"IF101\",\n  \"nama_mk\": \"Pemrograman Web Lanjut\"\n}"
+						},
+						{
+							"name": "404 Not Found",
+							"status": "Not Found",
+							"code": 404,
+							"body": "{\n  \"message\": \"Not Found\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Delete Matakuliah",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/matakuliah/:id",
+							"host": ["{{base_url}}"],
+							"path": ["matakuliah", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "200 OK - Deleted",
+							"status": "OK",
+							"code": 200,
+							"body": "{\n  \"message\": \"Deleted\"\n}"
+						},
+						{
+							"name": "404 Not Found",
+							"status": "Not Found",
+							"code": 404,
+							"body": "{\n  \"message\": \"Not Found\"\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "05 Fasilitas - Ruang Kelas",
+			"description": {
+				"type": "text/markdown",
+				"content": "## 05 Fasilitas - Ruang Kelas\n\n`STATUS: PRODUCTION`\n\nFolder ini mengelola data ruang kelas/fasilitas perkuliahan."
+			},
+			"item": [
+				{
+					"name": "Get All Ruang",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/ruang",
+							"host": ["{{base_url}}"],
+							"path": ["ruang"]
+						}
+					},
+					"response": [
+						{
+							"name": "200 OK - Success",
+							"status": "OK",
+							"code": 200,
+							"body": "[\n  {\n    \"id\": 1,\n    \"nama_ruang\": \"R.301\",\n    \"gedung\": \"Gedung A\"\n  }\n]"
+						}
+					]
+				},
+				{
+					"name": "Create Ruang",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nama_ruang\": \"R.301\",\n  \"gedung\": \"Gedung A\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/ruang",
+							"host": ["{{base_url}}"],
+							"path": ["ruang"]
+						},
+						"description": "#### Request Body\n| Field | Tipe | Wajib | Deskripsi |\n| :--- | :--- | :--- | :--- |\n| `nama_ruang` | String | Ya | Nama/nomor ruang |\n| `gedung` | String | Ya | Nama gedung |"
+					},
+					"response": [
+						{
+							"name": "201 Created",
+							"status": "Created",
+							"code": 201,
+							"body": "{\n  \"id\": 1,\n  \"nama_ruang\": \"R.301\",\n  \"gedung\": \"Gedung A\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Ruang by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/ruang/:id",
+							"host": ["{{base_url}}"],
+							"path": ["ruang", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "200 OK",
+							"status": "OK",
+							"code": 200,
+							"body": "{\n  \"id\": 1,\n  \"nama_ruang\": \"R.301\",\n  \"gedung\": \"Gedung A\"\n}"
+						},
+						{
+							"name": "404 Not Found",
+							"status": "Not Found",
+							"code": 404,
+							"body": "{\n  \"message\": \"Not Found\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Update Ruang",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nama_ruang\": \"R.302\",\n  \"gedung\": \"Gedung B\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/ruang/:id",
+							"host": ["{{base_url}}"],
+							"path": ["ruang", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "200 OK - Updated",
+							"status": "OK",
+							"code": 200,
+							"body": "{\n  \"id\": 1,\n  \"nama_ruang\": \"R.302\",\n  \"gedung\": \"Gedung B\"\n}"
+						},
+						{
+							"name": "404 Not Found",
+							"status": "Not Found",
+							"code": 404,
+							"body": "{\n  \"message\": \"Not Found\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Delete Ruang",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/ruang/:id",
+							"host": ["{{base_url}}"],
+							"path": ["ruang", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "200 OK - Deleted",
+							"status": "OK",
+							"code": 200,
+							"body": "{\n  \"message\": \"Deleted\"\n}"
+						},
+						{
+							"name": "404 Not Found",
+							"status": "Not Found",
+							"code": 404,
+							"body": "{\n  \"message\": \"Not Found\"\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "06 Operasional - Jadwal Perkuliahan",
+			"description": {
+				"type": "text/markdown",
+				"content": "## 06 Operasional - Jadwal Perkuliahan\n\n`STATUS: PRODUCTION`\n\nEndpoint ini mengintegrasikan data dosen, mata kuliah, dan ruang kelas.\n\n#### Relasi Data\n- `dosen_id` → Ambil dari Folder 03\n- `matakuliah_id` → Ambil dari Folder 04  \n- `ruang_id` → Ambil dari Folder 05\n\n#### Aturan Bentrok\nSistem akan menolak (`409 Conflict`) jika:\n1. Dosen mengajar di jam yang sama di ruang berbeda\n2. Ruangan digunakan oleh mata kuliah lain di jam yang sama"
+			},
+			"item": [
+				{
+					"name": "Get All Jadwal",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/jadwal?nidn=",
+							"host": ["{{base_url}}"],
+							"path": ["jadwal"],
+							"query": [
+								{
+									"key": "nidn",
+									"value": "",
+									"description": "Filter berdasarkan NIDN dosen"
+								}
+							]
+						},
+						"description": "### GET /jadwal - List All Schedules\n\n`STATUS: PRODUCTION`\n\n#### Query Parameters\n| Parameter | Tipe | Wajib | Deskripsi |\n| :--- | :--- | :--- | :--- |\n| `nidn` | String | Tidak | Filter berdasarkan NIDN |"
+					},
+					"response": [
+						{
+							"name": "200 OK - JSON",
+							"status": "OK",
+							"code": 200,
+							"body": "{\n  \"status\": \"success\",\n  \"data\": [\n    {\n      \"id\": 1,\n      \"hari\": \"Senin\",\n      \"jam_mulai\": \"08:00\",\n      \"dosen\": {\n        \"id\": 1,\n        \"nama\": \"Dr. Ahmad Fauzi, M.Kom\",\n        \"nidn\": \"0123456789\"\n      },\n      \"matakuliah\": {\n        \"id\": 1,\n        \"kode_mk\": \"IF101\",\n        \"nama_mk\": \"Pemrograman Web\"\n      },\n      \"ruang\": {\n        \"id\": 1,\n        \"nama_ruang\": \"R.301\",\n        \"gedung\": \"Gedung A\"\n      },\n      \"mahasiswas\": [\n        {\n          \"id\": 1,\n          \"nim\": \"2024001\",\n          \"nama\": \"Ahmad Rizky\"\n        }\n      ]\n    }\n  ]\n}"
+						},
+						{
+							"name": "200 OK - XML",
+							"status": "OK",
+							"code": 200,
+							"body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<akademik_response>\n  <status>success</status>\n  <daftar_jadwal>\n    <pertemuan>\n      <hari>Senin</hari>\n      <waktu>08:00</waktu>\n      <matakuliah>\n        <kode>IF101</kode>\n        <nama>Pemrograman Web</nama>\n      </matakuliah>\n      <dosen>\n        <nidn>0123456789</nidn>\n        <nama>Dr. Ahmad Fauzi, M.Kom</nama>\n      </dosen>\n      <ruang>\n        <nama>R.301</nama>\n        <gedung>Gedung A</gedung>\n      </ruang>\n      <peserta_kuliah>\n        <mahasiswa>\n          <nim>2024001</nim>\n          <nama>Ahmad Rizky</nama>\n        </mahasiswa>\n      </peserta_kuliah>\n    </pertemuan>\n  </daftar_jadwal>\n</akademik_response>"
+						}
+					]
+				},
+				{
+					"name": "Create Jadwal",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"dosen_id\": 1,\n  \"matakuliah_id\": 1,\n  \"ruang_id\": 1,\n  \"hari\": \"Senin\",\n  \"jam_mulai\": \"08:00\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/jadwal",
+							"host": ["{{base_url}}"],
+							"path": ["jadwal"]
+						},
+						"description": "### POST /jadwal - Create Schedule\n\n#### Request Body\n| Field | Tipe | Wajib | Deskripsi |\n| :--- | :--- | :--- | :--- |\n| `dosen_id` | Integer | Ya | ID dosen |\n| `matakuliah_id` | Integer | Ya | ID matakuliah |\n| `ruang_id` | Integer | Ya | ID ruang |\n| `hari` | String | Ya | Hari |\n| `jam_mulai` | String | Ya | Waktu (HH:mm) |"
+					},
+					"response": [
+						{
+							"name": "201 Created",
+							"status": "Created",
+							"code": 201,
+							"body": "{\n  \"id\": 1,\n  \"dosen_id\": 1,\n  \"matakuliah_id\": 1,\n  \"ruang_id\": 1,\n  \"hari\": \"Senin\",\n  \"jam_mulai\": \"08:00\"\n}"
+						},
+						{
+							"name": "409 Conflict - Jadwal Bentrok",
+							"status": "Conflict",
+							"code": 409,
+							"body": "{\n  \"message\": \"Jadwal bentrok dengan ruangan lain pada waktu yang sama\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Update Jadwal",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"hari\": \"Selasa\",\n  \"jam_mulai\": \"10:00\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/jadwal/:id",
+							"host": ["{{base_url}}"],
+							"path": ["jadwal", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "200 OK - Updated",
+							"status": "OK",
+							"code": 200,
+							"body": "{\n  \"id\": 1,\n  \"dosen_id\": 1,\n  \"matakuliah_id\": 1,\n  \"ruang_id\": 1,\n  \"hari\": \"Selasa\",\n  \"jam_mulai\": \"10:00\"\n}"
+						},
+						{
+							"name": "404 Not Found",
+							"status": "Not Found",
+							"code": 404,
+							"body": "{\n  \"message\": \"Not Found\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Delete Jadwal",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/jadwal/:id",
+							"host": ["{{base_url}}"],
+							"path": ["jadwal", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "200 OK - Deleted",
+							"status": "OK",
+							"code": 200,
+							"body": "{\n  \"message\": \"Deleted\"\n}"
+						},
+						{
+							"name": "404 Not Found",
+							"status": "Not Found",
+							"code": 404,
+							"body": "{\n  \"message\": \"Not Found\"\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Endpoint Tambahan",
+			"description": {
+				"type": "text/markdown",
+				"content": "## Endpoint Tambahan\n\nEndpoint utilitas tambahan di luar standar SIAKAD."
+			},
+			"item": [
+				{
+					"name": "Hitung Luas",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"panjang\": 10,\n  \"lebar\": 5\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/hitung-luas",
+							"host": ["{{base_url}}"],
+							"path": ["hitung-luas"]
+						},
+						"description": "### Hitung Luas Persegi Panjang\n\n`STATUS: PRODUCTION`\n\n#### Request Body\n| Field | Tipe | Wajib | Deskripsi |\n| :--- | :--- | :--- | :--- |\n| `panjang` | Number | Ya | Panjang |\n| `lebar` | Number | Ya | Lebar |"
+					},
+					"response": [
+						{
+							"name": "200 OK - Success",
+							"status": "OK",
+							"code": 200,
+							"body": "{\n  \"success\": true,\n  \"message\": \"Perhitungan luas berhasil\",\n  \"data\": {\n    \"panjang\": 10,\n    \"lebar\": 5,\n    \"luas\": 50\n  }\n}"
+						},
+						{
+							"name": "400 Bad Request - Validation Error",
+							"status": "Bad Request",
+							"code": 400,
+							"body": "{\n  \"message\": \"The given data was invalid.\",\n  \"errors\": {\n    \"panjang\": [\"The panjang field is required.\"]\n  }\n}"
+						}
+					]
+				}
+			]
+		}
+	]
+}
